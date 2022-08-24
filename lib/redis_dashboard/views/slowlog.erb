@@ -1,6 +1,6 @@
 <div class="card">
   <p>
-    List up to <%= client.config["slowlog-max-len"] %> commands slower than <%== format_usec client.config["slowlog-log-slower-than"] %>.
+    List up to <%= client.config["slowlog-max-len"] %> commands slower than <%= format_usec client.config["slowlog-log-slower-than"] %>.
     It is defined in your config by <em>slowlog-max-len</em> and <em>slowlog-log-slower-than</em>.
   </p>
   <table>
@@ -18,7 +18,7 @@
           <td class="wrap"><%= cmd.command.join(" ") %></td>
           <td class="is-right"><%= cmd.id %></td>
           <td class="is-right date"><%= epoch_to_short_date_time cmd.timestamp %></td>
-          <td class="is-right"><%== format_usec cmd.microseconds %></td>
+          <td class="is-right"><%= format_usec cmd.microseconds %></td>
         </tr>
       <% end %>
     </tbody>
