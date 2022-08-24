@@ -4,7 +4,23 @@ module RedisDashboard
   end
 
   def self.urls
-    @urls ||= [ENV["REDIS_URL"] ||"redis://localhost"]
+    @urls
+  end
+
+  def self.options=(array)
+    @options = array
+  end
+
+  def self.options
+    @options
+  end
+
+  def redis_opts
+    {
+      host: ENV["REDIS_HOST"],
+      password: (ENV["REDIS_PASSWORD"] if ENV["REDIS_PASSWORD"].present?),
+      port: ENV["REDIS_PORT"]
+    }
   end
 end
 

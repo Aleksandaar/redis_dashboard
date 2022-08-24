@@ -54,16 +54,34 @@ class RedisDashboard::Application < Sinatra::Base
 
   def client
     return @client if @client
-    if url = RedisDashboard.urls.find { |url| URI(url).host == params[:server] }
-      @client ||= RedisDashboard::Client.new(url)
+
+    if RedisDashboard.urls.present?
+      if url = RedisDashboard.urls.find { |url| URI(url).host == params[:server] }
+        @client ||= RedisDashboard::Client.new(url: url)
+      else
+        raise Sinatra::NotFound
+      end
+    elsif RedisDashboard.options.present?
+      if option = RedisDashboard.options.find { |option| option[:host] == params[:server] }
+        @client ||= RedisDashboard::Client.new(options: option)
+      else
+        raise Sinatra::NotFound
+      end
     else
       raise Sinatra::NotFound
     end
+
   end
 
   def clients
-    @clients ||= RedisDashboard.urls.map do |url|
-      RedisDashboard::Client.new(url)
+    if RedisDashboard.urls.present?
+      @clients ||= RedisDashboard.urls.map do |url|
+        RedisDashboard::Client.new(url: url)
+      end
+    elsif RedisDashboard.options.present?
+      @clients ||= RedisDashboard.options.map do |option|
+        RedisDashboard::Client.new(options: option)
+      end
     end
   end
 

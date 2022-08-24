@@ -1,9 +1,14 @@
 class RedisDashboard::Client
-  attr_reader :url, :connection
+  attr_reader :url, :connection, :options
 
-  def initialize(url)
+  def initialize(url: url, options: options)
     @url = url
-    @connection ||= Redis.new(url: url)
+    @options = options
+    if @url.present?
+      @connection ||= Redis.new(url: url)
+    else
+      @connection ||= Redis.new(options)
+    end
   end
 
   def clients
@@ -49,7 +54,11 @@ class RedisDashboard::Client
   end
 
   def host
-    URI(url).host
+    if url.present?
+      URI(url).host
+    else
+      options[:host]
+    end
   end
 
   def keyspace
